@@ -1,0 +1,7 @@
+.tasks tr{
+    cursor: pointer;
+}
+
+.completed td{
+    text-decoration:line-through;
+}
