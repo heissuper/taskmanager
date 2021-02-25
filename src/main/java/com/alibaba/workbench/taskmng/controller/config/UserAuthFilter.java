@@ -2,6 +2,7 @@ package com.alibaba.workbench.taskmng.controller.config;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.HashSet;
 
 import javax.servlet.Filter;
@@ -36,11 +37,23 @@ public class UserAuthFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         
         String path = request.getRequestURI();
+        
+        log.info("URL地址：" + request.getRequestURL() );
+        
+        Enumeration<String> eh = request.getHeaderNames();
+        StringBuilder sb = new StringBuilder();
+        while( eh.hasMoreElements() ) {
+        	String headName = eh.nextElement();
+        	sb.append( headName + "=" +  request.getHeader( headName) ).append(";");
+        }
+        log.info("Header信息：" + sb.toString() );
+        
         for( String uri : LoginUris ) {
 	    	if ( path.matches( uri ) ) {
 	    		UserVO user =  CookieUtils.getUserFromCookie(request);
 	    		if ( user == null ) {
 	    			String loginUrl = "/login";
+	    			
 	    			response.sendRedirect(loginUrl);
 	    			return;
 	    		}
